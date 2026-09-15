@@ -10,10 +10,10 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private final Object[][] board;
+    private final ChessPiece[][] board;
 
     public ChessBoard() {
-        this.board = new Object[8][8];
+        this.board = new ChessPiece[8][8];
     }
 
     /**
@@ -26,7 +26,7 @@ public class ChessBoard {
         int row = position.getRow();
         int col = position.getColumn();
 
-        board[row][col] = piece;
+        board[row - 1][col - 1] = piece;
     }
 
     @Override
@@ -53,10 +53,10 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         int row = position.getRow();
         int col = position.getColumn();
-        if (equals(board[row][col])) {
+        if (equals(board[row - 1][col - 1])) {
             return null;
         }
-        return board[row][col].getPieceType();
+        return board[row - 1][col - 1];
     }
 
     /**
