@@ -9,6 +9,7 @@ package chess;
 public class ChessBoard {
 
     public ChessBoard() {
+        int[][] board = new int[8][8];
         
     }
 
