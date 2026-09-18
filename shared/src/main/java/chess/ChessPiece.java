@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -52,7 +53,65 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = new ArrayList<>();
+        if (this.pieceType.equals(PieceType.KING)) {
+            return kingMoves(board, myPosition);
+        }
+        /**
+        if (this.pieceType.equals(PieceType.QUEEN)) {
+
+        }
+        if (this.pieceType.equals(PieceType.BISHOP)) {
+
+        }
+        if (this.pieceType.equals(PieceType.KNIGHT)) {
+
+        }
+        if (this.pieceType.equals(PieceType.ROOK)) {
+
+        }
+        if (this.pieceType.equals(PieceType.PAWN)) {
+
+        }
+         */
+        return moves;
+    }
+
+    //instead of running a for loop, check each of the 9 squares surrounding the piece
+    public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<ChessMove>();
+
+        //check row above
+        for (int i=-1; i < 2; i++){
+            int targetRow = myPosition.getRow() + 1;
+            int targetCol = myPosition.getColumn() + i;
+            if (checkInbound(new ChessPosition(targetRow, targetCol)) && checkSpace(board, new ChessPosition(targetRow, targetCol))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(targetRow, targetCol), null));
+            }
+        }
+
+        //check row below
+        for (int i=-1; i < 2; i++){
+            int targetRow = myPosition.getRow() - 1;
+            int targetCol = myPosition.getColumn() + i;
+            if (checkInbound(new ChessPosition(targetRow, targetCol)) && checkSpace(board, new ChessPosition(targetRow, targetCol))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(targetRow, targetCol), null));
+            }
+        }
+
+        // check left and right
+        if (checkInbound(new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1)) && checkSpace(board, new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1))) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1), null));
+        }
+        if (checkInbound(new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1)) && checkSpace(board, new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1))) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1), null));
+        }
+        // print out list of available moves
+        System.out.println("Available moves:");
+        for (ChessMove move : moves) {
+            System.out.println("{" + move.toString());
+        }
+        return moves;
     }
 
     @Override
@@ -70,7 +129,6 @@ public class ChessPiece {
     }
 
     public String outString() {
-        String string;
         if (this.pieceType == PieceType.KING) {
             return "King";
         } else if (this.pieceType == PieceType.QUEEN) {
@@ -84,5 +142,27 @@ public class ChessPiece {
         } else if (this.pieceType == PieceType.PAWN) {
             return "Pawn";
         } return "null";
+    }
+
+
+    public boolean checkInbound(ChessPosition position) {
+        int row = position.getRow();
+        int col = position.getColumn();
+        if (row >= 8 || row < 0 || col >= 8 || col < 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkSpace(ChessBoard board, ChessPosition position) {
+        ChessPiece piece = board.getPiece(position);
+        if (piece == null) {
+            return true;
+        }
+        ChessGame.TeamColor spaceColor = piece.getTeamColor();
+        if (pieceColor.equals(spaceColor)) {
+            return false;
+        }
+        return true;
     }
 }

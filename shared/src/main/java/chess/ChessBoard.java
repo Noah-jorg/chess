@@ -11,7 +11,7 @@ import static chess.ChessPiece.PieceType.BISHOP;
 import static chess.ChessPiece.PieceType.KING;
 import static chess.ChessPiece.PieceType.QUEEN;
 import static chess.ChessPiece.PieceType.PAWN;
-import static chess.ChessPiece.PieceType.ROOK;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -84,30 +84,30 @@ public class ChessBoard {
             board[1][i] = new ChessPiece(WHITE, PAWN);
             System.out.println("White pawn added to 7," + (i+1));
         }
-        board[0][0] = new ChessPiece(WHITE, ROOK);
+        addPiece(new ChessPosition (1,1), new ChessPiece (WHITE, ROOK));
         System.out.println("White rook added to 1,1");
-        board[0][1] = new ChessPiece(WHITE, KNIGHT);
+        addPiece(new ChessPosition (1,2), new ChessPiece (WHITE, KNIGHT));
         System.out.println("White knight added to 1,2");
-        board[0][2] = new ChessPiece(WHITE, BISHOP);
+        addPiece(new ChessPosition (1,3), new ChessPiece (WHITE, BISHOP));
         System.out.println("White bishop added to 1,3");
-        board[0][3] = new ChessPiece(WHITE, QUEEN);
+        addPiece(new ChessPosition (1,4), new ChessPiece (WHITE, QUEEN));
         System.out.println("White queen added to 1,4");
-        board[0][4] = new ChessPiece(WHITE, KING);
+        addPiece(new ChessPosition (1,5), new ChessPiece (WHITE, KING));
         System.out.println("White king added to 1,5");
-        board[0][5] = new ChessPiece(WHITE, BISHOP);
+        addPiece(new ChessPosition (1,6), new ChessPiece (WHITE, BISHOP));
         System.out.println("White bishop added to 1,6");
-        board[0][6] = new ChessPiece(WHITE, KNIGHT);
+        addPiece(new ChessPosition (1,7), new ChessPiece (WHITE, KNIGHT));
         System.out.println("White knight added to 1,7");
-        board[0][7] = new ChessPiece(WHITE, ROOK);
+        addPiece(new ChessPosition (1,8), new ChessPiece (WHITE, ROOK));
         System.out.println("White rook added to 1,8");
 
-        board[7][0] = new ChessPiece(BLACK, ROOK);
+        addPiece(new ChessPosition (8,1), new ChessPiece (BLACK, ROOK));
         System.out.println("Black rook added to 8,1");
-        board[7][1] = new ChessPiece(BLACK, KNIGHT);
+        addPiece(new ChessPosition (8,2), new ChessPiece (BLACK, KNIGHT));
         System.out.println("Black knight added to 8,2");
-        board[7][2] = new ChessPiece(BLACK, BISHOP);
+        addPiece(new ChessPosition (8,3), new ChessPiece (BLACK, BISHOP));
         System.out.println("Black bishop added to 8,3");
-        board[7][3] = new ChessPiece(BLACK, QUEEN);
+        addPiece(new ChessPosition (8,4), new ChessPiece (BLACK, QUEEN));
         System.out.println("Black Queen added to 8,4");
         board[7][4] = new ChessPiece(BLACK, KING);
         System.out.println("Black King added to 8,5");

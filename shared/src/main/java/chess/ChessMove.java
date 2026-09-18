@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Objects;
+import java.util.Scanner;
+
 /**
  * Represents moving a chess piece on a chessboard
  * <p>
@@ -7,23 +10,46 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessMove {
+    private final ChessPosition startPosition;
+    private final ChessPosition endPosition;
+    private final ChessPiece.PieceType promotionPiece;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
+        this.promotionPiece = promotionPiece;
     }
 
     /**
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        throw new RuntimeException("Not implemented");
+        return startPosition;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        throw new RuntimeException("Not implemented");
+        return endPosition;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessMove chessMove = (ChessMove) o;
+        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startPosition, endPosition);
+    }
+
+    public String toString() {
+        return "{Start: " + startPosition.getRow() + "," + startPosition.getColumn() + "} {End: " + endPosition.getRow() + "," + endPosition.getColumn() + "}";
     }
 
     /**
@@ -33,6 +59,6 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        throw new RuntimeException("Not implemented");
+        return this.promotionPiece;
     }
 }
