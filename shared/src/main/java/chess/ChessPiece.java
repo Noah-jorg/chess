@@ -61,21 +61,177 @@ public class ChessPiece {
         if (this.pieceType.equals(PieceType.QUEEN)) {
 
         }
+         */
         if (this.pieceType.equals(PieceType.BISHOP)) {
-
+            return bishopMoves(board, myPosition);
         }
+
         if (this.pieceType.equals(PieceType.KNIGHT)) {
-
+            return knightMoves(board, myPosition);
         }
-        if (this.pieceType.equals(PieceType.ROOK)) {
+        //if (this.pieceType.equals(PieceType.ROOK)) {
 
-        }
+        //}
         if (this.pieceType.equals(PieceType.PAWN)) {
 
         }
-         */
         return moves;
     }
+
+    public Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<ChessMove>();
+
+        /**
+        Logic:
+         First see if
+
+
+
+        */
+        return moves;
+    }
+
+        public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<ChessMove>();
+        //up 2 right 1
+        if (inbound(new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + 1))) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + 1))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + 1), null));
+            } else if (!checkColor(board, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + 1))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + 1), null));
+            }
+        }
+
+        //up 1 right 2
+        if (inbound(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 2))) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 2))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 2), null));
+            } else if (!checkColor(board, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 2))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 2), null));
+            }
+        }
+
+        //up 2 left 1
+        if (inbound(new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() - 1))) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() - 1))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() - 1), null));
+            } else if (!checkColor(board, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + -1))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + -1), null));
+            }
+        }
+        //up 1 left 2
+        if (inbound(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 2))) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 2))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 2), null));
+            } else if (!checkColor(board, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 2))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 2), null));
+            }
+        }
+
+        //down 2 right 1
+        if (inbound(new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() + 1))) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() + 1))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() + 1), null));
+            } else if (!checkColor(board, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() + 1))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() + 1), null));
+            }
+        }
+
+        //down 1 right 2
+        if (inbound(new ChessPosition(myPosition.getRow() -1 , myPosition.getColumn() + 2))) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 2))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 2), null));
+            } else if (!checkColor(board, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 2))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 2), null));
+            }
+        }
+
+        //down 2 left 1
+        if (inbound(new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() - 1))) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() - 1))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() - 1), null));
+            } else if (!checkColor(board, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() - 1))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() - 1), null));
+            }
+        }
+
+        //down 1 left 2
+        if (inbound(new ChessPosition(myPosition.getRow() -1 , myPosition.getColumn() -2))) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 2))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 2), null));
+            } else if (!checkColor(board, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 2))) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 2), null));
+            }
+        }
+
+        return moves;
+    }
+
+    public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<ChessMove>();
+
+        //checks up and right
+        int i = 1;
+        ChessPosition target = new ChessPosition(myPosition.getRow() + 1 , myPosition.getColumn() + 1);
+        while (inbound(target)) {
+            if (checkNull(board, target)){
+                moves.add(new ChessMove(myPosition, target, null));
+            } else if (checkColor(board, target)) {
+                break;
+            } else {
+                moves.add(new ChessMove(myPosition, target, null));
+                break;
+            } i++;
+            target = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
+        }
+        //checks up and left
+        int j = 1;
+        ChessPosition target2 = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
+        while (inbound(target2)) {
+            if (checkNull(board, target2)){
+                moves.add(new ChessMove(myPosition, target2, null));
+            } else if (checkColor(board, target2)) {
+                break;
+            } else {
+                moves.add(new ChessMove(myPosition, target2, null));
+                break;
+            } j++;
+            target2 = new ChessPosition(myPosition.getRow() + j, myPosition.getColumn() - j);
+        }
+
+        //checks down and right
+        int k = 1;
+        ChessPosition target3 = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
+        while (inbound(target3)) {
+            if (checkNull(board, target3)){
+                moves.add(new ChessMove(myPosition, target3, null));
+            } else if (checkColor(board, target3)) {
+                break;
+            } else {
+                moves.add(new ChessMove(myPosition, target3, null));
+                break;
+            } k++;
+            target3 = new ChessPosition(myPosition.getRow() - k, myPosition.getColumn() + k);
+        }
+
+        //checks down and left
+        int l = 1;
+        ChessPosition target4 = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
+        while (inbound(target4)) {
+            if (checkNull(board, target4)){
+                moves.add(new ChessMove(myPosition, target4, null));
+            } else if (checkColor(board, target4)) {
+                break;
+            } else {
+                moves.add(new ChessMove(myPosition, target4, null));
+                break;
+            } l++;
+            target4 = new ChessPosition(myPosition.getRow() - l, myPosition.getColumn() - l);
+        }
+        return moves;
+    }
+
+
 
     //instead of running a for loop, check each of the 9 squares surrounding the piece
     public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
@@ -148,7 +304,7 @@ public class ChessPiece {
     public boolean checkInbound(ChessPosition position) {
         int row = position.getRow();
         int col = position.getColumn();
-        if (row >= 8 || row < 0 || col >= 8 || col < 0) {
+        if (row - 1 >= 8 || row - 1 < 0 || col - 1 >= 8 || col - 1 < 0) {
             return false;
         }
         return true;
@@ -164,5 +320,26 @@ public class ChessPiece {
             return false;
         }
         return true;
+    }
+
+    //checks position's color vs this.piece color
+    public boolean checkColor(ChessBoard board, ChessPosition position) {
+        ChessPiece piece = board.getPiece(position);
+        if (piece == null) {
+            return false;
+        }
+        ChessGame.TeamColor c = piece.getTeamColor();
+        return pieceColor.equals(c);
+    }
+
+    public boolean checkNull(ChessBoard board, ChessPosition position) {
+        ChessPiece piece = board.getPiece(position);
+        return piece == null;
+    }
+
+    public boolean inbound(ChessPosition position) {
+        int r = position.getRow() - 1;
+        int c = position.getColumn() - 1;
+        return r >= 0 && r < 8 && c >= 0 && c < 8;
     }
 }
