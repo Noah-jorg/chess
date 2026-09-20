@@ -34,7 +34,6 @@ public class ChessBoard {
     public void addPiece(ChessPosition position, ChessPiece piece) {
         int row = position.getRow();
         int col = position.getColumn();
-        System.out.println("Added " + piece.outString() + " to " + row +"," + col);
         board[row - 1][col - 1] = piece;
     }
 
