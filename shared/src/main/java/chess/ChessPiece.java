@@ -79,17 +79,13 @@ public class ChessPiece {
     }
 
     public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<ChessMove>();
-        Collection<ChessMove> rook = new ArrayList<ChessMove>();
-        Collection<ChessMove> bishop = new ArrayList<ChessMove>();
-        rook = rookMoves(board, myPosition);
-        bishop = bishopMoves(board, myPosition);
+        Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> rook = rookMoves(board, myPosition);
+        Collection<ChessMove> bishop = bishopMoves(board, myPosition);
         moves.addAll(rook);
         moves.addAll(bishop);
         return moves;
     }
-
-
 
 
     public Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
@@ -162,23 +158,13 @@ public class ChessPiece {
 
 
     public Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<ChessMove>();
-        /**
-        Logic:
-         First see if piece is in starting position (WHITE= row 2 (true location row 1), BLACK= row 7 (true location row 6))
-         if in start location -> check additional space directly in front if in bounds
-         if spot in front is ANY piece, cannot move forward.
-         if spot infront left and right are open and opposite color, can move
-        Check inbounds with every move
-        */
+        Collection<ChessMove> moves = new ArrayList<>();
         boolean start = (pieceColor == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2) || (pieceColor == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7);
 
         //white pawn checks rows going up (+)
         if (pieceColor == ChessGame.TeamColor.WHITE) {
-            System.out.println("Pawn is WHITE");
             //checks spaces in front is in bounds
             if (inbound(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()))) {
-                System.out.println("Space in front is in bounds");
                 // checks if space in front is null. If null -> add. if not -> next.
                 if (checkNull(board, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()))) {
                     if (myPosition.getRow() + 1 == 8) {
@@ -187,7 +173,6 @@ public class ChessPiece {
                     else {
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), null));
                     }
-                    System.out.println("Added space to moves list");
                     //if start == true, then check the next piece. NEEDS TO BE BELOW PREVIOUS IF STATEMENT
                     if (start && checkNull(board, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn()))) {
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn()),null));
@@ -449,11 +434,6 @@ public class ChessPiece {
         if (checkInbound(new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1)) && checkSpace(board, new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1))) {
             moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1), null));
         }
-        // print out list of available moves
-        System.out.println("Available moves:");
-        for (ChessMove move : moves) {
-            System.out.println("{" + move.toString());
-        }
         return moves;
     }
 
@@ -475,10 +455,7 @@ public class ChessPiece {
     public boolean checkInbound(ChessPosition position) {
         int row = position.getRow();
         int col = position.getColumn();
-        if (row - 1 >= 8 || row - 1 < 0 || col - 1 >= 8 || col - 1 < 0) {
-            return false;
-        }
-        return true;
+        return row - 1 < 8 && row - 1 >= 0 && col - 1 < 8 && col - 1 >= 0;
     }
 
     public boolean checkSpace(ChessBoard board, ChessPosition position) {
