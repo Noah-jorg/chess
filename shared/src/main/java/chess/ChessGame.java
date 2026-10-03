@@ -140,29 +140,7 @@ public class ChessGame {
             return false;
         }
         ChessPosition kingPosition = getKingPosition(teamColor);
-        Collection<ChessMove> kingMoves = board.getPiece(kingPosition).pieceMoves(board, kingPosition);
-        Collection<ChessMove> enemyMoves = new ArrayList<>();
-        if (teamColor.equals(TeamColor.WHITE)){
-            enemyMoves = getEnemyMoves(TeamColor.BLACK);
-        }
-        if (teamColor.equals(TeamColor.BLACK)) {
-            enemyMoves = getEnemyMoves(TeamColor.WHITE);
-        }
-
-        //see if any kingMove endPositions are in enemyMoves. If there is a move that is not, then return false.
-        for (ChessMove kingMove : kingMoves){
-            boolean danger = false;
-            for (ChessMove enemyMove : enemyMoves) {
-                if (enemyMove.getEndPosition().equals(kingMove.getEndPosition())){
-                    danger = true;
-                    break;
-                }
-            }
-            if (!danger){
-                return false;
-            }
-        }
-        return true;
+        return validMoves(kingPosition).isEmpty();
     }
 
     /**
