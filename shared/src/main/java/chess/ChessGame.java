@@ -66,35 +66,22 @@ public class ChessGame {
         if (piece == null){
             return null;
         }
+        TeamColor teamColor = piece.getTeamColor();
         pieceMoves = piece.pieceMoves(board, startPosition);
-        ChessBoard original = new ChessBoard();
-        original = copyBoard(board, original);
 
-        //Checks if team is in check, then checkmate. If just in check, board goes through every move option of piece in
-        //startPosition and makes a copy of the board to test if the piece resolves isInCheck.
-        if (isInCheck(currentTeam)){
-            if (isInCheckmate(currentTeam)){
-                return null;
+        for (ChessMove move : pieceMoves){
+            ChessPosition end = move.getEndPosition();
+            ChessPiece cap = board.getPiece(end);
+            board.addPiece(startPosition,null);
+            board.addPiece(end, piece);
+            if (!isInCheck(teamColor)){
+                validMoves.add(move);
             }
+            board.addPiece(end, cap);
+            board.addPiece(startPosition, piece);
+        }
 
-            for (ChessMove pieceMove : pieceMoves){
-                ChessPosition start = pieceMove.getStartPosition();
-                ChessPosition end = pieceMove.getEndPosition();
-                board.addPiece(start, null);
-                board.addPiece(end, piece);
-                if (!isInCheck(currentTeam)){
-                    validMoves.add(pieceMove);
-                }
-                //sets board back to original configuration
-                setBoard(original);
-            }
-        }
-        //if not in check, then add all piece moves
-        else {
-            validMoves.addAll(pieceMoves);
-        }
         return validMoves;
-
     }
 
     /**
@@ -158,7 +145,7 @@ public class ChessGame {
         if (teamColor.equals(TeamColor.WHITE)){
             enemyMoves = getEnemyMoves(TeamColor.BLACK);
         }
-        if (teamColor.equals(TeamColor.BLACK)){
+        if (teamColor.equals(TeamColor.BLACK)) {
             enemyMoves = getEnemyMoves(TeamColor.WHITE);
         }
 
@@ -186,7 +173,39 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        /**
+         *  Get king position and possible moves. Check to make sure not in check or checkmate.
+         *  Check all possible moves and see if they match an enemy move.
+         *  If there are no possible moves, return true
+         */
+        ChessPosition kingPosition = getKingPosition(teamColor);
+        ChessPiece king = board.getPiece(kingPosition);
+        Collection<ChessMove> kingMoves = king.pieceMoves(board, kingPosition);
+        Collection<ChessMove> enemyMoves = new ArrayList<>();
+        if (teamColor.equals(TeamColor.WHITE)){
+            enemyMoves = getEnemyMoves(TeamColor.BLACK);
+        }
+        if (teamColor.equals(TeamColor.BLACK)){
+            enemyMoves = getEnemyMoves(TeamColor.WHITE);
+        }
+
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+        for (ChessMove move : kingMoves) {
+            boolean safeMove = true;
+            for (ChessMove eMove : enemyMoves) {
+                if (eMove.getEndPosition().equals(move.getEndPosition())) {
+                    safeMove = false;
+                    break;
+                }
+            }
+            if (safeMove){
+                return false;
+            }
+        }
+        return true;
+
     }
 
     /**
@@ -241,16 +260,6 @@ public class ChessGame {
             }
         }
         return enemyMoves;
-    }
-
-    public ChessBoard copyBoard(ChessBoard original, ChessBoard copy){
-        for (int i=1; i<9; i++){
-            for (int j=1; j<9; j++){
-                ChessPiece piece = original.getPiece(new ChessPosition(i,j));
-                copy.addPiece(new ChessPosition(i,j), piece);
-            }
-        }
-        return copy;
     }
 
     @Override
