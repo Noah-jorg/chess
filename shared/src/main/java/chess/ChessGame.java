@@ -59,11 +59,17 @@ public class ChessGame {
          *
          * A move is valid if it is a "piece move" for the piece at the input location and making that move would not leave the team’s king in danger of check.
          */
+        Collection<ChessMove> pieceMoves = new ArrayList<>();
         ChessPiece piece = board.getPiece(startPosition);
         if (piece == null){
             return null;
         }
-        ChessPosition kingPosition = getKingPosition(currentTeam);
+        pieceMoves = piece.pieceMoves(board, startPosition);
+        //checks if team is in check
+        if (isInCheck(currentTeam)){
+
+
+        }
 
 
 
@@ -78,7 +84,11 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition start = move.getStartPosition();
+        ChessPosition target = move.getEndPosition();
+        ChessPiece piece = board.getPiece(start);
+        board.addPiece(start, null);
+        board.addPiece(target, piece);
     }
 
     /**
@@ -97,20 +107,18 @@ public class ChessGame {
         ChessPosition kingPosition = getKingPosition(teamColor);
         Collection<ChessMove> enemyMoves = new ArrayList<>();
 
-        /** To find enemy pieces, loop through whole board and call pieceMoves if target is not null and color is not same
-         * color as teamColor
-         */
-
-        for (int i=1; i<9; i++){
-            for (int j=1; j<9; j++){
-                ChessPosition target = new ChessPosition(i,j);
-                ChessPiece piece = board.getPiece(target);
-                if (piece != null){
-
-
-                }
+        if (teamColor.equals(TeamColor.WHITE)){
+            enemyMoves = getEnemyMoves(TeamColor.BLACK);
+        }
+        if (teamColor.equals(TeamColor.BLACK)){
+            enemyMoves = getEnemyMoves(TeamColor.WHITE);
+        }
+        for (ChessMove target : enemyMoves){
+            if (target.getEndPosition().equals(kingPosition)){
+                return true;
             }
         }
+        return false;
 
     }
 
@@ -121,7 +129,22 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)){
+            return false;
+        }
+        ChessPosition kingPosition = getKingPosition(teamColor);
+        Collection<ChessMove> kingMoves = board.getPiece(kingPosition).pieceMoves(board, kingPosition);
+        Collection<ChessMove> enemyMoves = new ArrayList<>();
+        if (teamColor.equals(TeamColor.WHITE)){
+            enemyMoves = getEnemyMoves(TeamColor.BLACK);
+        }
+        if (teamColor.equals(TeamColor.BLACK)){
+            enemyMoves = getEnemyMoves(TeamColor.WHITE);
+        }
+        ChessBoard original = this.board;
+        for (ChessMove kingMove : kingMoves){
+
+        }
     }
 
     /**
