@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -59,21 +60,40 @@ public class ChessGame {
          *
          * A move is valid if it is a "piece move" for the piece at the input location and making that move would not leave the team’s king in danger of check.
          */
-        Collection<ChessMove> pieceMoves = new ArrayList<>();
+        Collection<ChessMove> validMoves = new ArrayList<>();
+        Collection<ChessMove> pieceMoves;
         ChessPiece piece = board.getPiece(startPosition);
         if (piece == null){
             return null;
         }
         pieceMoves = piece.pieceMoves(board, startPosition);
-        //checks if team is in check
+        ChessBoard original = new ChessBoard();
+        original = copyBoard(board, original);
+
+        //Checks if team is in check, then checkmate. If just in check, board goes through every move option of piece in
+        //startPosition and makes a copy of the board to test if the piece resolves isInCheck.
         if (isInCheck(currentTeam)){
+            if (isInCheckmate(currentTeam)){
+                return null;
+            }
 
-
+            for (ChessMove pieceMove : pieceMoves){
+                ChessPosition start = pieceMove.getStartPosition();
+                ChessPosition end = pieceMove.getEndPosition();
+                board.addPiece(start, null);
+                board.addPiece(end, piece);
+                if (!isInCheck(currentTeam)){
+                    validMoves.add(pieceMove);
+                }
+                //sets board back to original configuration
+                setBoard(original);
+            }
         }
-
-
-
-        return
+        //if not in check, then add all piece moves
+        else {
+            validMoves.addAll(pieceMoves);
+        }
+        return validMoves;
 
     }
 
@@ -141,10 +161,21 @@ public class ChessGame {
         if (teamColor.equals(TeamColor.BLACK)){
             enemyMoves = getEnemyMoves(TeamColor.WHITE);
         }
-        ChessBoard original = this.board;
-        for (ChessMove kingMove : kingMoves){
 
+        //see if any kingMove endPositions are in enemyMoves. If there is a move that is not, then return false.
+        for (ChessMove kingMove : kingMoves){
+            boolean danger = false;
+            for (ChessMove enemyMove : enemyMoves) {
+                if (enemyMove.getEndPosition().equals(kingMove.getEndPosition())){
+                    danger = true;
+                    break;
+                }
+            }
+            if (!danger){
+                return false;
+            }
         }
+        return true;
     }
 
     /**
@@ -210,5 +241,29 @@ public class ChessGame {
             }
         }
         return enemyMoves;
+    }
+
+    public ChessBoard copyBoard(ChessBoard original, ChessBoard copy){
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                ChessPiece piece = original.getPiece(new ChessPosition(i,j));
+                copy.addPiece(new ChessPosition(i,j), piece);
+            }
+        }
+        return copy;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return currentTeam == chessGame.currentTeam && Objects.equals(board, chessGame.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentTeam, board);
     }
 }
