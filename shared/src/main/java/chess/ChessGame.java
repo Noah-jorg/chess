@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -51,8 +52,23 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessPiece piece = getBoard().getPiece(startPosition);
-        return piece.pieceMoves(board, startPosition);
+        /**
+         *LOGIC: First I need to check if the current team's king is in check. If it is, limit moves to only those that will
+         * stop the king from being in check. To do this, get the pieceMoves and test each one to see if isInCheck returns false.
+         * If isInCheck returns false, then add to valid moves. If isInCheck is still true, then move does not take king out of check.
+         *
+         * A move is valid if it is a "piece move" for the piece at the input location and making that move would not leave the team’s king in danger of check.
+         */
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null){
+            return null;
+        }
+        ChessPosition kingPosition = getKingPosition(currentTeam);
+
+
+
+        return
+
     }
 
     /**
@@ -72,7 +88,30 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        /**
+         * LOGIC: Get the teamColor's king position. Then get pieceMoves for all enemy pieces, append into a list.
+         * If kingPosition is in list, return true. If not, return false.
+         * teamColor = color of current team
+         */
+
+        ChessPosition kingPosition = getKingPosition(teamColor);
+        Collection<ChessMove> enemyMoves = new ArrayList<>();
+
+        /** To find enemy pieces, loop through whole board and call pieceMoves if target is not null and color is not same
+         * color as teamColor
+         */
+
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                ChessPosition target = new ChessPosition(i,j);
+                ChessPiece piece = board.getPiece(target);
+                if (piece != null){
+
+
+                }
+            }
+        }
+
     }
 
     /**
@@ -102,7 +141,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -111,6 +150,42 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return this.board;
+    }
+
+    //returns true if color passed in matches color at position
+    public boolean sameColor(ChessPosition position, ChessGame.TeamColor color){
+        if (board.getPiece(position) == null){
+            return false;
+        }
+        return board.getPiece(position).getTeamColor() == color;
+    }
+
+    //returns location of given color's king
+    public ChessPosition getKingPosition(TeamColor color){
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9;j++){
+                ChessPosition target = new ChessPosition(i,j);
+                ChessPiece piece = board.getPiece(target);
+                if (sameColor(target, color) && piece.getPieceType().equals(ChessPiece.PieceType.KING)){
+                    return target;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Collection<ChessMove> getEnemyMoves(TeamColor color){
+        Collection<ChessMove> enemyMoves = new ArrayList<>();
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                ChessPosition target = new ChessPosition(i,j);
+                if (sameColor(target, color)){
+                    ChessPiece piece = board.getPiece(target);
+                    enemyMoves.addAll(piece.pieceMoves(board, target));
+                }
+            }
+        }
+        return enemyMoves;
     }
 }
