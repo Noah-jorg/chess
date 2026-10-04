@@ -53,13 +53,6 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        /**
-         *LOGIC: First I need to check if the current team's king is in check. If it is, limit moves to only those that will
-         * stop the king from being in check. To do this, get the pieceMoves and test each one to see if isInCheck returns false.
-         * If isInCheck returns false, then add to valid moves. If isInCheck is still true, then move does not take king out of check.
-         *
-         * A move is valid if it is a "piece move" for the piece at the input location and making that move would not leave the team’s king in danger of check.
-         */
         Collection<ChessMove> validMoves = new ArrayList<>();
         Collection<ChessMove> pieceMoves;
         ChessPiece piece = board.getPiece(startPosition);
@@ -92,17 +85,16 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition start = move.getStartPosition();
-        ChessPosition target = move.getEndPosition();
         ChessPiece piece = board.getPiece(start);
-        Collection<ChessMove> moves = new ArrayList<>();
-        if  (piece == null){
+        Collection<ChessMove> moves;
+        if (piece == null){
             throw new InvalidMoveException("You can't do that");
         }
         if (piece.getTeamColor() != currentTeam){
             throw new InvalidMoveException("Wrong team");
         }
         moves = validMoves(move.getStartPosition());
-        if(moves == null || !moves.contains(move)){
+        if (moves == null || !moves.contains(move)){
             throw new InvalidMoveException("Not a valid move");
         }
         if (move.getPromotionPiece() != null) {
@@ -110,7 +102,6 @@ public class ChessGame {
         }
         board.addPiece(start, null);
         board.addPiece(move.getEndPosition(), piece);
-
         if (currentTeam == TeamColor.WHITE){
             currentTeam = TeamColor.BLACK;
         }
@@ -126,15 +117,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        /**
-         * LOGIC: Get the teamColor's king position. Then get pieceMoves for all enemy pieces, append into a list.
-         * If kingPosition is in list, return true. If not, return false.
-         * teamColor = color of current team
-         */
-
         ChessPosition kingPosition = getKingPosition(teamColor);
         Collection<ChessMove> enemyMoves = new ArrayList<>();
-
         if (teamColor.equals(TeamColor.WHITE)){
             enemyMoves = getEnemyMoves(TeamColor.BLACK);
         }
@@ -182,11 +166,6 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        /**
-         *  Get king position and possible moves. Check to make sure not in check or checkmate.
-         *  Check all possible moves and see if they match an enemy move.
-         *  If there are no possible moves, return true
-         */
         if (isInCheck(teamColor)) {
             return false;
         }
