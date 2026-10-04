@@ -94,8 +94,29 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition target = move.getEndPosition();
         ChessPiece piece = board.getPiece(start);
+        Collection<ChessMove> moves = new ArrayList<>();
+        if  (piece == null){
+            throw new InvalidMoveException("You can't do that");
+        }
+        if (piece.getTeamColor() != currentTeam){
+            throw new InvalidMoveException("Wrong team");
+        }
+        moves = validMoves(move.getStartPosition());
+        if(moves == null || !moves.contains(move)){
+            throw new InvalidMoveException("Not a valid move");
+        }
+        if (move.getPromotionPiece() != null) {
+            piece = new ChessPiece(currentTeam, move.getPromotionPiece());
+        }
         board.addPiece(start, null);
-        board.addPiece(target, piece);
+        board.addPiece(move.getEndPosition(), piece);
+
+        if (currentTeam == TeamColor.WHITE){
+            currentTeam = TeamColor.BLACK;
+        }
+        else{
+            currentTeam = TeamColor.WHITE;
+        }
     }
 
     /**
