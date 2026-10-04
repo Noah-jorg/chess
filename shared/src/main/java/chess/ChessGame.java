@@ -139,8 +139,18 @@ public class ChessGame {
         if (!isInCheck(teamColor)){
             return false;
         }
-        ChessPosition kingPosition = getKingPosition(teamColor);
-        return validMoves(kingPosition).isEmpty();
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition target = new ChessPosition(i, j);
+                if (sameColor(target, teamColor)) {
+                    Collection<ChessMove> moves = validMoves(target);
+                    if (moves != null && !moves.isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -156,34 +166,21 @@ public class ChessGame {
          *  Check all possible moves and see if they match an enemy move.
          *  If there are no possible moves, return true
          */
-        ChessPosition kingPosition = getKingPosition(teamColor);
-        ChessPiece king = board.getPiece(kingPosition);
-        Collection<ChessMove> kingMoves = king.pieceMoves(board, kingPosition);
-        Collection<ChessMove> enemyMoves = new ArrayList<>();
-        if (teamColor.equals(TeamColor.WHITE)){
-            enemyMoves = getEnemyMoves(TeamColor.BLACK);
-        }
-        if (teamColor.equals(TeamColor.BLACK)){
-            enemyMoves = getEnemyMoves(TeamColor.WHITE);
-        }
-
         if (isInCheck(teamColor)) {
             return false;
         }
-        for (ChessMove move : kingMoves) {
-            boolean safeMove = true;
-            for (ChessMove eMove : enemyMoves) {
-                if (eMove.getEndPosition().equals(move.getEndPosition())) {
-                    safeMove = false;
-                    break;
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition target = new ChessPosition(i, j);
+                if (sameColor(target, teamColor)) {
+                    Collection<ChessMove> moves = validMoves(target);
+                    if (moves != null && !moves.isEmpty()) {
+                        return false;
+                    }
                 }
-            }
-            if (safeMove){
-                return false;
             }
         }
         return true;
-
     }
 
     /**
