@@ -1,7 +1,4 @@
 package model;
 
-import java.util.Objects;
+public record UserData(String username, String password, String email) {}
 
-public class UserData {
-    record UserRecord(String username, String password, String email) {}
-}
