@@ -1,9 +1,6 @@
 package server;
 import com.google.gson.Gson;
-import dataaccess.AuthDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import io.javalin.*;
 import service.*;
 
@@ -13,13 +10,24 @@ public class Server {
 
     private final Javalin javalin;
     private final UserService userService;
+    private final ClearService clearService;
     private final Gson gson = new Gson();
 
     public Server() {
         AuthDAO authDAO = new MemoryAuthDAO();
         UserDAO userDAO = new MemoryUserDAO();
+        GameDAO gameDAO = new MemoryGameDAO();
+
         userService = new UserService(userDAO, authDAO);
+        clearService = new ClearService(userDAO, authDAO, gameDAO);
+
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
+
+
+        javalin.delete("/db", ctx -> {
+            clearService.clear();
+            ctx.status(200).result("{}");
+        });
 
         // Register your endpoints and exception handlers here.
         javalin.post("/user", ctx -> {
