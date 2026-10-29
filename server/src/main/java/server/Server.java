@@ -5,10 +5,9 @@ import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
 import io.javalin.*;
-import service.AlreadyTakenException;
-import service.RegisterRequest;
-import service.RegisterResult;
-import service.UserService;
+import service.*;
+
+import java.util.Map;
 
 public class Server {
 
@@ -28,6 +27,9 @@ public class Server {
             RegisterResult result = userService.register(r);
             ctx.status(200).result(gson.toJson(result));
         });
+        javalin.exception(BadRequestException.class, (ex, ctx) -> ctx.status(400).result(gson.toJson(Map.of("message", ex.getMessage()))));
+        javalin.exception(AlreadyTakenException.class, (ex, ctx) -> ctx.status(403).result(gson.toJson(Map.of("message", ex.getMessage()))));
+        javalin.exception(Exception.class, (ex, ctx) -> ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + ex.getMessage()))));
 
     }
 
