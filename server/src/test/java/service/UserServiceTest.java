@@ -39,4 +39,26 @@ public class UserServiceTest {
         service.register(new RegisterRequest("noah", "123", "123@gmail.com"));
         assertThrows(AlreadyTakenException.class, () -> service.register(new RegisterRequest("noah", "123", "123@gmail.com")));
     }
+
+    @Test
+    public void loginSuccess() throws Exception {
+        var register = service.register(new RegisterRequest("noah", "123", "123@gmail.com"));
+        var loginResult = service.login(new LoginRequest("noah", "123"));
+        assertEquals("noah", loginResult.username());
+        assertNotNull(loginResult.authToken());
+        assertNotNull(authDAO.getAuth(loginResult.authToken()));
+    }
+
+    @Test
+    public void loginFailure() throws Exception {
+        service.register(new RegisterRequest("noah", "123", "123@gmail.com"));
+        assertThrows(UnauthorizedException.class, () -> service.login(new LoginRequest("noah", "1234")));
+    }
+
+    @Test
+    public void loginNoPasswordOrUsername() throws Exception {
+        service.register(new RegisterRequest("noah", "123", "123@gmail.com"));
+        assertThrows(BadRequestException.class, () -> service.login(new LoginRequest("noah", null)));
+        assertThrows(BadRequestException.class, () -> service.login(new LoginRequest(null, "123")));
+    }
 }
