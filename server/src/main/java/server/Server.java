@@ -11,6 +11,7 @@ public class Server {
     private final Javalin javalin;
     private final UserService userService;
     private final ClearService clearService;
+    private final GameService gameService;
     private final Gson gson = new Gson();
 
     public Server() {
@@ -20,9 +21,9 @@ public class Server {
 
         userService = new UserService(userDAO, authDAO);
         clearService = new ClearService(userDAO, authDAO, gameDAO);
+        gameService = new GameService(authDAO, gameDAO);
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
-
 
         javalin.delete("/db", ctx -> {
             clearService.clear();
@@ -47,8 +48,7 @@ public class Server {
         });
         javalin.get("/game", ctx -> {
            String token = ctx.header("authorization");
-           userService.listGames(token);
-           ctx.status(200).result
+           ctx.status(200).result(gson.toJson(gameService.listGames(token)));
         });
         javalin.exception(BadRequestException.class, (ex, ctx) -> ctx.status(400).result(gson.toJson(Map.of("message", ex.getMessage()))));
         javalin.exception(UnauthorizedException.class, (ex, ctx) -> ctx.status(401).result(gson.toJson(Map.of("message", ex.getMessage()))));
