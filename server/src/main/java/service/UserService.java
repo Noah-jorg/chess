@@ -45,4 +45,11 @@ public class UserService {
         authDAO.createAuth(new AuthData(authToken, r.username()));
         return new LoginResult(r.username(), authToken);
     }
+
+    public void logout(String authToken) throws UnauthorizedException, DataAccessException {
+        if (authToken == null || authDAO.getAuth(authToken) == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+        authDAO.deleteAuth(authToken);
+    }
 }

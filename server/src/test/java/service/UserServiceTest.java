@@ -61,4 +61,16 @@ public class UserServiceTest {
         assertThrows(BadRequestException.class, () -> service.login(new LoginRequest("noah", null)));
         assertThrows(BadRequestException.class, () -> service.login(new LoginRequest(null, "123")));
     }
+
+    @Test
+    public void logoutSuccess() throws Exception {
+        var register = service.register(new RegisterRequest("noah", "123", "123@gmail.com"));
+        service.logout(register.authToken());
+        assertNull(authDAO.getAuth(register.authToken()));
+    }
+
+    @Test
+    public void invalidLogout() {
+        assertThrows(UnauthorizedException.class, () -> service.logout("gabagool"));
+    }
 }
