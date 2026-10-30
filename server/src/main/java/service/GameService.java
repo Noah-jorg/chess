@@ -3,6 +3,7 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
+import model.GameData;
 
 import java.util.List;
 
@@ -20,5 +21,16 @@ public class GameService {
             throw new UnauthorizedException("Error: unauthorized");
         }
         return gameDAO.listGames().stream().map(game -> new GameRecord(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName())).toList();
+    }
+
+    public CreateGameResult createGame(String authToken, CreateGameRequest r) throws BadRequestException, UnauthorizedException, DataAccessException {
+        if (authToken == null || authDAO.getAuth(authToken) == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+        if (r == null || r.gameName() == null || r.gameName().isBlank()) {
+            throw new BadRequestException("Error: bad request");
+        }
+        GameData game = gameDAO.createGame(r.gameName());
+        return new CreateGameResult(game.gameID());
     }
 }

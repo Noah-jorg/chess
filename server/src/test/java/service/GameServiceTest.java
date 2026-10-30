@@ -40,4 +40,17 @@ public class GameServiceTest {
     public void invalidToken() {
         assertThrows(UnauthorizedException.class, () -> service.listGames("321"));
     }
+
+    @Test
+    public void createGameSuccess() throws Exception {
+        var result = service.createGame(token, new CreateGameRequest("First"));
+        var gameList = service.listGames(token);
+        assertEquals(1, gameList.size());
+        assertEquals("First", gameList.getFirst().gameName());
+    }
+
+    @Test
+    public void invalidCreateGame() throws Exception {
+        assertThrows(UnauthorizedException.class, () -> service.createGame("321", new CreateGameRequest("Second")));
+    }
 }
