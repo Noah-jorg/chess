@@ -45,6 +45,11 @@ public class Server {
             userService.logout(token);
             ctx.status(200).result("{}");
         });
+        javalin.get("/game", ctx -> {
+           String token = ctx.header("authorization");
+           userService.listGames(token);
+           ctx.status(200).result
+        });
         javalin.exception(BadRequestException.class, (ex, ctx) -> ctx.status(400).result(gson.toJson(Map.of("message", ex.getMessage()))));
         javalin.exception(UnauthorizedException.class, (ex, ctx) -> ctx.status(401).result(gson.toJson(Map.of("message", ex.getMessage()))));
         javalin.exception(AlreadyTakenException.class, (ex, ctx) -> ctx.status(403).result(gson.toJson(Map.of("message", ex.getMessage()))));
