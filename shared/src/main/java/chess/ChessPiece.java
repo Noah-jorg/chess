@@ -161,7 +161,6 @@ public class ChessPiece {
         Collection<ChessMove> moves = new ArrayList<>();
         boolean start = (pieceColor == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2) || (pieceColor == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7);
 
-        //white pawn checks rows going up (+)
         if (pieceColor == ChessGame.TeamColor.WHITE) {
             //checks spaces in front is in bounds
             if (inbound(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()))) {
@@ -181,9 +180,7 @@ public class ChessPiece {
             }
             //check right corner
             if (inbound(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() +1))) {
-                //check if null
                 if (!checkNull(board,new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() +1))) {
-                    //check if piece is black to the right corner
                     if (board.getPiece(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1)).getTeamColor() == ChessGame.TeamColor.BLACK) {
                         if (myPosition.getRow() + 1 == 8) {
                             addPromotion(moves, myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()+1));
@@ -196,9 +193,7 @@ public class ChessPiece {
             }
             //check left corner
             if (inbound(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() -1))) {
-                //check if null
                 if (!checkNull(board,new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() -1))) {
-                    //check if piece is black to the left corner
                     if (board.getPiece(new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1)).getTeamColor() == ChessGame.TeamColor.BLACK) {
                         if (myPosition.getRow() + 1 == 8) {
                             addPromotion(moves, myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()-1));
@@ -210,12 +205,9 @@ public class ChessPiece {
                 }
             }
         }
-
         //BLACK PAWN
         if (pieceColor == ChessGame.TeamColor.BLACK) {
-            //checks spaces in front is in bounds
             if (inbound(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()))) {
-                // checks if space in front is null. If null -> add. if not -> next.
                 if (checkNull(board, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()))) {
                     if (myPosition.getRow() - 1 == 1) {
                         addPromotion(moves, myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()));
@@ -223,7 +215,6 @@ public class ChessPiece {
                     else {
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()), null));
                     }
-                    //if start == true, then check the next piece. NEEDS TO BE BELOW PREVIOUS IF STATEMENT
                     if (start && checkNull(board, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn()))) {
                         moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn()),null));
                     }
@@ -231,9 +222,7 @@ public class ChessPiece {
             }
             //check right corner
             if (inbound(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1))) {
-                //check if null
                 if (!checkNull(board, new ChessPosition(myPosition.getRow()-1,myPosition.getColumn()+1) )) {
-                    //check if piece is white to the right corner
                     if (board.getPiece(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1)).getTeamColor() == ChessGame.TeamColor.WHITE) {
                         if (myPosition.getRow() - 1 == 1) {
                             addPromotion(moves, myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()+1));
@@ -246,9 +235,7 @@ public class ChessPiece {
             }
             //check left corner
             if (inbound(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1))) {
-                //check if null
                 if (!checkNull(board, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1))) {
-                    //check if piece is white to the left corner
                     if (board.getPiece(new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1)).getTeamColor() == ChessGame.TeamColor.WHITE) {
                         if (myPosition.getRow() - 1 == 1) {
                             addPromotion(moves, myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()-1));
@@ -263,7 +250,7 @@ public class ChessPiece {
         return moves;
     }
 
-        public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<ChessMove>();
         //up 2 right 1
         if (inbound(new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + 1))) {

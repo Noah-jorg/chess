@@ -141,21 +141,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if (!isInCheck(teamColor)){
-            return false;
-        }
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                ChessPosition target = new ChessPosition(i, j);
-                if (sameColor(target, teamColor)) {
-                    Collection<ChessMove> moves = validMoves(target);
-                    if (moves != null && !moves.isEmpty()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+        return isInCheck(teamColor) && hasValidMoves(teamColor);
     }
 
     /**
@@ -166,21 +152,22 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if (isInCheck(teamColor)) {
-            return false;
-        }
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                ChessPosition target = new ChessPosition(i, j);
-                if (sameColor(target, teamColor)) {
-                    Collection<ChessMove> moves = validMoves(target);
+        return !isInCheck(teamColor) && hasValidMoves(teamColor);
+    }
+
+    private boolean hasValidMoves(TeamColor teamColor) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                if (sameColor(position, teamColor)) {
+                    Collection<ChessMove> moves = validMoves(position);
                     if (moves != null && !moves.isEmpty()) {
-                        return false;
+                        return true;
                     }
                 }
             }
         }
-        return true;
+        return false;
     }
 
     /**

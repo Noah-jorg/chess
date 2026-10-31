@@ -9,15 +9,15 @@ import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
     private final HashMap<Integer, GameData> games = new HashMap<>();
-    private int ID = 1;
+    private int id = 1;
 
     public void clear() {
         games.clear();
-        ID = 1;
+        id = 1;
     }
 
     public GameData createGame(String name) {
-        GameData game = new GameData(ID++, null, null, name, new ChessGame());
+        GameData game = new GameData(id++, null, null, name, new ChessGame());
         games.put(game.gameID(), game);
         return game;
     }
