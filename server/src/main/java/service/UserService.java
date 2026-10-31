@@ -2,7 +2,6 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
-import io.javalin.http.BadRequestResponse;
 import model.*;
 import dataaccess.*;
 
@@ -17,9 +16,9 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
-    public RegisterResult register(RegisterRequest r) throws DataAccessException, BadRequestResponse, AlreadyTakenException {
+    public RegisterResult register(RegisterRequest r) throws DataAccessException, BadRequestException, AlreadyTakenException {
         if (r.username() == null || r.password() == null || r.email() == null) {
-            throw new BadRequestResponse("Error: bad request");
+            throw new BadRequestException("Error: bad request");
         }
         else if (userDAO.getUser(r.username()) != null) {
             throw new AlreadyTakenException("Error: already taken");

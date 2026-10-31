@@ -46,6 +46,9 @@ public class GameService {
         if (game == null) {
             throw new BadRequestException("Error: bad request");
         }
+        if (!color.equals("WHITE") && !color.equals("BLACK")) {
+            throw new BadRequestException("Error: bad request");
+        }
         GameData updatedGame;
         AuthData auth = authDAO.getAuth(authToken);
         if (authToken == null || auth == null) {
