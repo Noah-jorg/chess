@@ -17,11 +17,13 @@ public class GameService {
         this.gameDAO = gameDAO;
     }
 
-    public List<GameRecord> listGames(String token) throws UnauthorizedException, DataAccessException {
+    public ListGamesResult listGames(String token) throws UnauthorizedException, DataAccessException {
         if (token == null || authDAO.getAuth(token) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        return gameDAO.listGames().stream().map(game -> new GameRecord(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName())).toList();
+        List<GameRecord> summary = gameDAO.listGames().stream().map(game -> new GameRecord(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName())).toList();
+
+        return new ListGamesResult(summary);
     }
 
     public CreateGameResult createGame(String authToken, CreateGameRequest r) throws BadRequestException, UnauthorizedException, DataAccessException {

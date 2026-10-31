@@ -29,10 +29,10 @@ public class GameServiceTest {
         gameDAO.createGame("CS 235");
         gameDAO.createGame("CS 236");
         var result = service.listGames(token);
-        assertEquals(3, result.size());
-        System.out.println(result.get(0));
-        System.out.println(result.get(1));
-        System.out.println(result.get(2));
+        assertEquals(3, result.games().size());
+        System.out.println(result.games().get(0).gameName());
+        System.out.println(result.games().get(1).gameName());
+        System.out.println(result.games().get(2).gameName());
     }
 
     @Test
@@ -44,8 +44,8 @@ public class GameServiceTest {
     public void createGameSuccess() throws Exception {
         var result = service.createGame(token, new CreateGameRequest("First"));
         var gameList = service.listGames(token);
-        assertEquals(1, gameList.size());
-        assertEquals("First", gameList.getFirst().gameName());
+        assertEquals(1, gameList.games().size());
+        assertEquals("First", gameList.games().getFirst().gameName());
     }
 
     @Test
