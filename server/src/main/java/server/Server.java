@@ -55,6 +55,12 @@ public class Server {
             CreateGameRequest r = gson.fromJson(ctx.body(), CreateGameRequest.class);
             ctx.status(200).result(gson.toJson(gameService.createGame(authToken, r)));
         });
+        javalin.put("/game", ctx -> {
+            String authToken = ctx.header("authorization");
+            JoinGameRequest r = gson.fromJson(ctx.body(), JoinGameRequest.class);
+            gameService.joinGame(authToken, r);
+            ctx.status(200).result("{}");
+        });
         javalin.exception(BadRequestException.class, (ex, ctx) -> ctx.status(400).result(gson.toJson(Map.of("message", ex.getMessage()))));
         javalin.exception(UnauthorizedException.class, (ex, ctx) -> ctx.status(401).result(gson.toJson(Map.of("message", ex.getMessage()))));
         javalin.exception(AlreadyTakenException.class, (ex, ctx) -> ctx.status(403).result(gson.toJson(Map.of("message", ex.getMessage()))));

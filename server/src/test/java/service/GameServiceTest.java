@@ -5,8 +5,7 @@ import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceTest {
     private GameService service;
@@ -52,5 +51,28 @@ public class GameServiceTest {
     @Test
     public void invalidCreateGame() throws Exception {
         assertThrows(UnauthorizedException.class, () -> service.createGame("321", new CreateGameRequest("Second")));
+    }
+
+    @Test
+    public void joinGameSuccess() throws Exception {
+        var game = gameDAO.createGame("first");
+        service.joinGame(token, new JoinGameRequest("WHITE", game.gameID()));
+        assertEquals("noah", gameDAO.getGame(game.gameID()).whiteUsername());
+        assertNull(gameDAO.getGame(game.gameID()).blackUsername());
+    }
+
+    @Test
+    public void joinGameAlreadyTaken() throws Exception {
+        var game = gameDAO.createGame("first");
+        authDAO.createAuth(new AuthData("321", "Zane"));
+        service.joinGame(token, new JoinGameRequest("WHITE", game.gameID()));
+        assertThrows(AlreadyTakenException.class, () ->
+                service.joinGame("321", new JoinGameRequest("WHITE", game.gameID())));
+    }
+
+    @Test
+    public void gameNotFound() throws Exception {
+        assertThrows(BadRequestException.class, () ->
+                service.joinGame(token, new JoinGameRequest("WHITE", 42)));
     }
 }
