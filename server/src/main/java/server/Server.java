@@ -70,6 +70,12 @@ public class Server {
 
     public int run(int desiredPort) {
         javalin.start(desiredPort);
+        try {
+            DatabaseManager.createDatabase();
+            System.out.println("Created database successfully");
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Unable to create database");
+        }
         return javalin.port();
     }
 
