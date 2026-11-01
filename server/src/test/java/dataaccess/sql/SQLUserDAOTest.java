@@ -9,9 +9,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SQLUserDAOTest {
+
     @BeforeAll
     public static void init() throws DataAccessException {
-        DatabaseManager.createDatabase();
+        DatabaseManager.configureDatabase();
     }
 
     @Test

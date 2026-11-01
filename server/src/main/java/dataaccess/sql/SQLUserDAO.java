@@ -1,8 +1,11 @@
 package dataaccess.sql;
 
 import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import dataaccess.UserDAO;
 import model.UserData;
+
+import java.sql.SQLException;
 
 
 public class SQLUserDAO implements UserDAO {
@@ -15,6 +18,13 @@ public class SQLUserDAO implements UserDAO {
     }
 
     public void clear() throws DataAccessException {
-        throw new DataAccessException("clear() not implemented yet");
+        try {var conn = DatabaseManager.getConnection();
+            var statement = "DELETE FROM users";
+            var preparedStatement = conn.prepareStatement(statement); {
+                preparedStatement.executeUpdate();
+            }
+    } catch (SQLException ex) {
+            throw new DataAccessException("Error: unable to clear users", ex);
+            }
+        }
     }
-}

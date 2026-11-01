@@ -29,33 +29,36 @@ public class DatabaseManager {
         }
     }
 
-    private final static String[] createStatements = {
+    public final static String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  users (
               username VARCHAR(256) NOT NULL,
               passwordHash VARCHAR(256) NOT NULL,
               email VARCHAR(256) NOT NULL,
-              PRIMARY KEY (username),
+              PRIMARY KEY (username)
               )
-            ""","""
-            CREATE TABLE IF NOT EXISTS  auth (
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS auth (
               authToken VARCHAR(256) NOT NULL,
               username VARCHAR(256) NOT NULL,
               PRIMARY KEY (authToken),
+              FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
               )
-            """, """
+            """,
+            """
             CREATE TABLE IF NOT EXISTS  games (
-              gameID INT(256) NOT NULL AUTO_INCREMENT,
+              gameID INT NOT NULL AUTO_INCREMENT,
               whiteUsername VARCHAR(256) NULL,
               blackUsername VARCHAR(256) NULL,
               gameName VARCHAR(256) NOT NULL,
               game TEXT NOT NULL,
-              PRIMARY KEY (gameID),
+              PRIMARY KEY (gameID)
               )
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public static void configureDatabase() throws DataAccessException {
         createDatabase();
         try (var conn = getConnection()) {
             for (String statement : createStatements) {
@@ -80,7 +83,7 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    static Connection getConnection() throws DataAccessException {
+    public static Connection getConnection() throws DataAccessException {
         try {
             //do not wrap the following line with a try-with-resources
             var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);

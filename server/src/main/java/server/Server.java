@@ -1,6 +1,7 @@
 package server;
 import com.google.gson.Gson;
 import dataaccess.*;
+import dataaccess.sql.*;
 import io.javalin.*;
 import service.*;
 
@@ -15,9 +16,9 @@ public class Server {
     private final Gson gson = new Gson();
 
     public Server() {
-        AuthDAO authDAO = new MemoryAuthDAO();
-        UserDAO userDAO = new MemoryUserDAO();
-        GameDAO gameDAO = new MemoryGameDAO();
+        AuthDAO authDAO = new SQLAuthDAO();
+        UserDAO userDAO = new SQLUserDAO();
+        GameDAO gameDAO = new SQLGameDAO();
 
         userService = new UserService(userDAO, authDAO);
         clearService = new ClearService(userDAO, authDAO, gameDAO);
@@ -69,13 +70,12 @@ public class Server {
     }
 
     public int run(int desiredPort) {
-        javalin.start(desiredPort);
         try {
-            DatabaseManager.createDatabase();
-            System.out.println("Created database successfully");
-        } catch (DataAccessException ex){
-            throw new RuntimeException("Unable to create database");
+            DatabaseManager.configureDatabase();
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Unable to create database", ex);
         }
+        javalin.start(desiredPort);
         return javalin.port();
     }
 
