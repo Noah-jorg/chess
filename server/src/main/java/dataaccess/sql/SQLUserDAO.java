@@ -9,8 +9,22 @@ import java.sql.SQLException;
 
 
 public class SQLUserDAO implements UserDAO {
+
     public UserData getUser(String username) throws DataAccessException {
-        throw new DataAccessException("getUser not implemented yet");
+        var statement = "SELECT username, passwordHash, email FROM users WHERE username = ?";
+        try (var conn = DatabaseManager.getConnection();
+             var prepared = conn.prepareStatement(statement)) {
+                 prepared.setString(1, username);
+                 try (var result = prepared.executeQuery()) {
+                     if (result.next()) {
+                         return new UserData(result.getString("username"), result.getString("passwordHash,"), result.getString("email"));
+
+                     }
+                     return null;
+                 }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Error: unable to access user data", ex);
+        }
     }
 
     public void createUser(UserData user) throws DataAccessException {
