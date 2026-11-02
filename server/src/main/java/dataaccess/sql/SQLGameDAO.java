@@ -1,14 +1,21 @@
 package dataaccess.sql;
 
 import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import dataaccess.GameDAO;
 import model.GameData;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 public class SQLGameDAO implements GameDAO {
     public void clear() throws DataAccessException {
-        throw new DataAccessException("clear not implemented yet");
+        try (var conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement("TRUNCATE TABLE games")) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataAccessException("Error: uable to clear games", ex);
+        }
     };
     public GameData createGame(String gameName) throws DataAccessException {
         throw new DataAccessException("createGame not implemented yet");

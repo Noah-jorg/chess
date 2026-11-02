@@ -12,7 +12,15 @@ public class SQLAuthDAO implements AuthDAO {
         throw new DataAccessException("getAuth not implemented yet");
     }
     public void createAuth(AuthData auth) throws DataAccessException {
-        throw new DataAccessException("createAuth not implemented yet");
+        var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+        try (var conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement(statement)) {
+            preparedStatement.setString(1, auth.authToken());
+            preparedStatement.setString(2, auth.username());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataAccessException("Error: unable to create auth token", ex);
+        }
     }
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
