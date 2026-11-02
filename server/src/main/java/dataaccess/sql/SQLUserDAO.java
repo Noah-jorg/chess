@@ -28,7 +28,16 @@ public class SQLUserDAO implements UserDAO {
     }
 
     public void createUser(UserData user) throws DataAccessException {
-        throw new DataAccessException("createUser not implemented yet");
+        var statement = "INSERT INTO users (username, passwordHash, email) VALUES (?, ?, ?)";
+        try (var conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement(statement)) {
+            preparedStatement.setString(1, user.username());
+            preparedStatement.setString(2, user.password());
+            preparedStatement.setString(3, user.email());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataAccessException("Error: unable to create user", ex);
+        }
     }
 
     public void clear() throws DataAccessException {

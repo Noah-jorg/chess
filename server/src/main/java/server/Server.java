@@ -65,7 +65,10 @@ public class Server {
         javalin.exception(BadRequestException.class, (ex, ctx) -> ctx.status(400).result(gson.toJson(Map.of("message", ex.getMessage()))));
         javalin.exception(UnauthorizedException.class, (ex, ctx) -> ctx.status(401).result(gson.toJson(Map.of("message", ex.getMessage()))));
         javalin.exception(AlreadyTakenException.class, (ex, ctx) -> ctx.status(403).result(gson.toJson(Map.of("message", ex.getMessage()))));
-        javalin.exception(Exception.class, (ex, ctx) -> ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + ex.getMessage()))));
+        javalin.exception(Exception.class, (ex, ctx) -> {
+            ex.printStackTrace();
+            ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + ex.getMessage())));
+        });
 
     }
 
