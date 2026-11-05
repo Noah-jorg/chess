@@ -91,7 +91,7 @@ public class SQLGameDAO implements GameDAO {
             if (preparedStatement.executeUpdate() == 0) {
                 throw new DataAccessException("Error: could not update the game");
             }
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
                 throw new DataAccessException("Error, could not update game", ex);
         }
     };
