@@ -62,7 +62,8 @@ public class SQLGameDAO implements GameDAO {
     };
     public GameData getGame(int gameID) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
-             var preparedStatement = conn.prepareStatement("SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID = ?")) {
+             var preparedStatement = conn.prepareStatement
+                     ("SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID = ?")) {
              preparedStatement.setInt(1, gameID);
              try (var result = preparedStatement.executeQuery()) {
                  if (result.next()) {

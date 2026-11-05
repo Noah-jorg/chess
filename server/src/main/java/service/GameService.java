@@ -21,7 +21,8 @@ public class GameService {
         if (token == null || authDAO.getAuth(token) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        List<GameRecord> summary = gameDAO.listGames().stream().map(game -> new GameRecord(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName())).toList();
+        List<GameRecord> summary = gameDAO.listGames().stream().map
+                (game -> new GameRecord(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName())).toList();
 
         return new ListGamesResult(summary);
     }
@@ -37,7 +38,8 @@ public class GameService {
         return new CreateGameResult(game.gameID());
     }
 
-    public void joinGame(String authToken, JoinGameRequest r) throws BadRequestException, UnauthorizedException, AlreadyTakenException, DataAccessException {
+    public void joinGame(String authToken, JoinGameRequest r) throws
+            BadRequestException, UnauthorizedException, AlreadyTakenException, DataAccessException {
         if (r == null || r.playerColor() == null) {
             throw new BadRequestException("Error: bad request");
         }
