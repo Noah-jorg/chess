@@ -44,6 +44,14 @@ public class SQLAuthDAO implements AuthDAO {
             throw new DataAccessException("Error: unable to clear auth tokens");
         }
     }
-    public void deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) throws DataAccessException {
+        var statement = "DELETE FROM auth WHERE authToken = ?";
+        try (var conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement(statement)) {
+                 preparedStatement.setString(1, authToken);
+                 preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataAccessException("Error: unable to delete auth token", ex);
+        }
     }
 }

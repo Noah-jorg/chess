@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLAuthDAOTest {
     private SQLUserDAO userDAO;
@@ -33,5 +33,32 @@ public class SQLAuthDAOTest {
         var auth = new AuthData("First-token", "noah");
         authDAO.createAuth(auth);
         assertEquals(auth, authDAO.getAuth("First-token"));
+    }
+
+    @Test
+    public void createAuthFails() throws DataAccessException {
+        var auth = new AuthData("Fake-token", "imposter");
+        assertThrows(DataAccessException.class, () -> authDAO.createAuth(auth));
+    }
+
+    @Test
+    public void getAuthMissing() throws DataAccessException {
+        assertNull(authDAO.getAuth("Fake-Token"));
+    }
+
+    @Test
+    public void deleteAuthSuccessful() throws DataAccessException {
+        authDAO.createAuth(new AuthData("First-token", "noah"));
+        authDAO.deleteAuth("noah");
+        assertNull(authDAO.getAuth("noah"));
+    }
+
+    @Test
+    public void clearSuccess() throws DataAccessException {
+        authDAO.createAuth(new AuthData("Red-fish", "noah"));
+        authDAO.createAuth(new AuthData("Blue-fish", "noah"));
+        authDAO.clear();
+        assertNull(authDAO.getAuth("Red-fish"));
+        assertNull(authDAO.getAuth("One-fish"));
     }
 }
