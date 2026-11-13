@@ -21,7 +21,7 @@ public class ChessClient {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit")) {
+        while (!result.equals("quit\n")) {
             printPrompt();
             String line = scanner.nextLine();
 
@@ -41,12 +41,13 @@ public class ChessClient {
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             String[] params = Arrays.copyOfRange(tokens, 1 , tokens.length);
             return switch (cmd) {
-                case "quit" -> "quit";
+                case "quit" -> "quit\n";
                 case "register" -> register(params);
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "create" -> createGame(params);
                 case "list" -> listGames();
+                case "join" -> joinGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -123,6 +124,10 @@ public class ChessClient {
             result.append(input);
         }
         return result.toString();
+    }
+
+    public String joinGame(String... params) throws ResponseException {
+
     }
 
     private void printPrompt() {

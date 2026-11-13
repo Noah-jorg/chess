@@ -2,6 +2,7 @@ package client;
 
 import chess.*;
 import exception.ResponseException;
+import ui.DrawBoard;
 
 public class ClientMain {
     public static void main(String[] args) throws ResponseException {
