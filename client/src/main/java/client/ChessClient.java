@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class ChessClient {
     private static ServerFacade server = null;
     private static State state = State.LOGGED_OUT;
+    private String authToken = null;
 
     public ChessClient(int port) throws ResponseException {
         server = new ServerFacade(port);
@@ -42,6 +43,7 @@ public class ChessClient {
                 case "quit" -> "quit";
                 case "register" -> register(params);
                 case "login" -> login(params);
+                case "logout" -> logout();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -56,9 +58,15 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ResponseException {
-        var request = new LoginRequest(params[0], params[1]);
-        server.login(request);
-        state = State.LOGGED_IN;
+        if (params.length == 2) {
+            var request = new LoginRequest(params[0], params[1]);
+            var result = server.login(request);
+            authToken = result.authToken();
+            state = State.LOGGED_IN;
+        }
+        else {
+            return "Error: expected login <USERNAME> <PASSWORD>";
+        }
         return String.format("You signed in as %s", params[0]);
     }
 
@@ -82,12 +90,26 @@ public class ChessClient {
                 """;
     }
 
+    public String logout() throws ResponseException {
+        assertState();
+        server.logout(authToken);
+        authToken = null;
+        state = State.LOGGED_OUT;
+        return "Logout successful.\n";
+    }
+
     private void printPrompt() {
         if (state == State.LOGGED_OUT){
             System.out.print("[LOGGED_OUT] >>> ");
         }
         else {
             System.out.print("[LOGGED_IN] >>> ");
+        }
+    }
+
+    private void assertState() throws ResponseException {
+        if (state == State.LOGGED_OUT) {
+            throw new ResponseException(ResponseException.Code.ClientError, "You must login first.");
         }
     }
 }
