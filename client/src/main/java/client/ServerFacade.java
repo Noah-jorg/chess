@@ -31,15 +31,19 @@ public class ServerFacade {
         return handleResponse(response, RegisterResult.class);
     }
 
-    /**
-    public LoginResult login(LoginRequest request) {
 
+    public LoginResult login(LoginRequest request) throws ResponseException{
+        var r = buildRequest("POST", "/session", request);
+        var response = sendRequest(r);
+        return handleResponse(response, LoginResult.class);
     }
 
-    public void joinGame(JoinGameRequest request) {
-
+    public void joinGame(JoinGameRequest request) throws ResponseException{
+        var r = buildRequest("PUT", "/game", request);
+        var response = sendRequest(r);
+        handleResponse(response,null);
     }
-     */
+
 
     private HttpRequest buildRequest(String method, String path, Object body) {
         var request = HttpRequest.newBuilder()

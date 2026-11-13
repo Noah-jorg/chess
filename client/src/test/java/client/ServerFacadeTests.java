@@ -3,6 +3,7 @@ package client;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
+import service.LoginRequest;
 import service.RegisterRequest;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,9 +46,12 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void registerDuplicateFails() throws Exception {
-        facade.register(new RegisterRequest("noah", "password", "other@byu.edu"));
-        assertThrows(ResponseException.class,
-                () -> facade.register(new RegisterRequest("noah", "password", "other2@gmail.com")));
+    void loginSuccessful() throws Exception {
+        var result = facade.register(new RegisterRequest("noah", "password", "noah@byu.edu"));
+        var loginResult = facade.login(new LoginRequest("noah", "password"));
+        assertEquals("noah", loginResult.username());
+        assertNotNull(loginResult.authToken());
     }
+
+
 }
