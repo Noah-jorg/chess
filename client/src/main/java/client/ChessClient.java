@@ -1,10 +1,10 @@
 package client;
 
+import com.google.gson.Gson;
 import exception.ResponseException;
-import service.CreateGameRequest;
-import service.LoginRequest;
-import service.RegisterRequest;
+import service.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -46,6 +46,7 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "create" -> createGame(params);
+                case "list" -> listGames();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -108,6 +109,20 @@ public class ChessClient {
         var name = String.join(" ", params);
         server.createGame(new CreateGameRequest(name), authToken);
         return String.format("Game %s created successfully", name);
+    }
+
+    public String listGames() throws ResponseException {
+        assertState();
+        var games = server.listGames(authToken);
+        var gamesList = new ArrayList<>(games.games());
+        var result = new StringBuilder();
+        for (int i = 0; i < gamesList.size(); i++) {
+            var game = gamesList.get(i);
+            String input = String.format("%d. %s [WHITE: %s] [BLACK: %s]%n",
+                    i + 1, game.gameName(), game.whiteUsername(), game.blackUsername());
+            result.append(input);
+        }
+        return result.toString();
     }
 
     private void printPrompt() {
