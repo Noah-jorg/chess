@@ -1,16 +1,12 @@
 package client;
 
 import chess.*;
-import service.RegisterRequest;
-import server.Server;
-
-import java.util.Scanner;
-
+import exception.ResponseException;
 
 public class ClientMain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ResponseException {
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
-        prelogin();
+        new ChessClient(8080);
     }
 }
