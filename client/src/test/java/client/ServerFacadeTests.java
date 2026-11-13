@@ -3,10 +3,7 @@ package client;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
-import service.CreateGameRequest;
-import service.CreateGameResult;
-import service.LoginRequest;
-import service.RegisterRequest;
+import service.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -61,5 +58,13 @@ public class ServerFacadeTests {
         var authToken = user.authToken();
         facade.createGame(new CreateGameRequest("game1"), authToken);
         assertNotNull(facade.listGames(authToken));
+    }
+
+    @Test
+    void joinGameSuccessful() throws Exception {
+        var user = facade.register(new RegisterRequest("noah", "password", "123@byu.edu"));
+        var authToken = user.authToken();
+        int id = facade.createGame(new CreateGameRequest("game1"), authToken).gameID();
+        assertDoesNotThrow(() -> facade.joinGame(authToken, new JoinGameRequest("WHITE", id)));
     }
 }
