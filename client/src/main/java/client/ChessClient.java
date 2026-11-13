@@ -1,8 +1,11 @@
 package client;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
 import service.*;
+import ui.DrawBoard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +51,7 @@ public class ChessClient {
                 case "create" -> createGame(params);
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
+                case "observe" -> observeGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -127,7 +131,16 @@ public class ChessClient {
     }
 
     public String joinGame(String... params) throws ResponseException {
-
+        assertState();
+        var games = server.listGames(authToken);
+        var gamesList = new ArrayList<>(games.games());
+        GameRecord game = gamesList.get(Integer.parseInt(params[0]) - 1);
+        int gameID = game.gameID();
+        String color = params[1].toUpperCase();
+        server.joinGame(authToken, new JoinGameRequest(color, gameID));
+        boolean whitePlayer = color.equals("WHITE");
+        return String.format("Joined %s as %s player.%n", game.gameName(), color.toLowerCase())
+                                + DrawBoard.drawBoard(new ChessGame().getBoard(), whitePlayer);
     }
 
     private void printPrompt() {
