@@ -1,6 +1,7 @@
 package client;
 
 import exception.ResponseException;
+import service.CreateGameRequest;
 import service.LoginRequest;
 import service.RegisterRequest;
 
@@ -44,6 +45,7 @@ public class ChessClient {
                 case "register" -> register(params);
                 case "login" -> login(params);
                 case "logout" -> logout();
+                case "create" -> createGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -96,6 +98,16 @@ public class ChessClient {
         authToken = null;
         state = State.LOGGED_OUT;
         return "Logout successful.\n";
+    }
+
+    public String createGame(String... params) throws ResponseException {
+        assertState();
+        if (params.length < 1) {
+            return "Invalid amount of parameters";
+        }
+        var name = String.join(" ", params);
+        server.createGame(new CreateGameRequest(name), authToken);
+        return String.format("Game %s created successfully", name);
     }
 
     private void printPrompt() {
