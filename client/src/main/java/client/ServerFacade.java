@@ -31,11 +31,16 @@ public class ServerFacade {
         return handleResponse(response, RegisterResult.class);
     }
 
-
     public LoginResult login(LoginRequest request) throws ResponseException{
         var r = buildRequest("POST", "/session", request, null);
         var response = sendRequest(r);
         return handleResponse(response, LoginResult.class);
+    }
+
+    public void logout(String authToken) throws ResponseException {
+        var r = buildRequest("DELETE", "/session", null, authToken);
+        var response = sendRequest(r);
+        handleResponse(response, null);
     }
 
     public ListGamesResult listGames(String authToken) throws ResponseException {

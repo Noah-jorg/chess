@@ -53,6 +53,13 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void logoutSuccessful() throws Exception {
+        var user = facade.register(new RegisterRequest("noah", "password", "noah@byu.edu"));
+        var authToken = user.authToken();
+        assertDoesNotThrow(() -> facade.logout(authToken));
+    }
+
+    @Test
     void listGamesSuccessful() throws Exception {
         var user = facade.register(new RegisterRequest("noah", "password", "123@byu.edu"));
         var authToken = user.authToken();
