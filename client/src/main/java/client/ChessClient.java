@@ -143,6 +143,16 @@ public class ChessClient {
                                 + DrawBoard.drawBoard(new ChessGame().getBoard(), whitePlayer);
     }
 
+    public String observeGame(String... params) throws ResponseException {
+        assertState();
+        var games = server.listGames(authToken);
+        var gamesList = new ArrayList<>(games.games());
+        GameRecord game = gamesList.get(Integer.parseInt(params[0]) - 1);
+        int gameID = game.gameID();
+        return String.format("Observing game %s.%n", game.gameName()) +
+                DrawBoard.drawBoard(new ChessGame().getBoard(), true);
+    }
+
     private void printPrompt() {
         if (state == State.LOGGED_OUT){
             System.out.print("[LOGGED_OUT] >>> ");
