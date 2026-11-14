@@ -23,10 +23,13 @@ public class ResponseException extends Exception{
     }
 
     public static ResponseException fromJson(String json) {
-        var map = new Gson().fromJson(json, HashMap.class);
-        var status = Code.valueOf(map.get("status").toString());
-        String message = map.get("message").toString();
-        return new ResponseException(status, message);
+        try {
+            var map = new Gson().fromJson(json, HashMap.class);
+            String message = String.valueOf(map.getOrDefault("message", "Request failed."));
+            return new ResponseException(Code.ClientError, message);
+        } catch (Exception e) {
+            return new ResponseException(Code.ServerError, "Request failed.");
+        }
     }
 
     public Code code() {

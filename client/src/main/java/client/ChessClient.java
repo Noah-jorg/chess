@@ -24,16 +24,15 @@ public class ChessClient {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit\n")) {
+        while (!result.equals("quit")) {
             printPrompt();
             String line = scanner.nextLine();
 
             try {
                 result = eval(line);
-                System.out.print(result);
+                System.out.println(result);
             } catch (Throwable e ) {
-                var msg = e.toString();
-                System.out.print(msg);
+                System.out.println("Error: " + e.getMessage());
             }
         }
     }
@@ -44,7 +43,7 @@ public class ChessClient {
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             String[] params = Arrays.copyOfRange(tokens, 1 , tokens.length);
             return switch (cmd) {
-                case "quit" -> "quit\n";
+                case "quit" -> "quit";
                 case "register" -> register(params);
                 case "login" -> login(params);
                 case "logout" -> logout();
@@ -55,26 +54,31 @@ public class ChessClient {
                 default -> help();
             };
         } catch (ResponseException ex) {
-            return ex.getMessage();
+            var msg = ex.getMessage();
+            return ((msg == null || msg.isBlank()) ? "unable to process request. Check your input again" : msg);
         }
     }
 
     public String register(String... params) throws ResponseException {
+        if (params.length != 3) {
+            return "Error: invalid amount of parameters.";
+        }
         var request = new RegisterRequest(params[0], params[1], params[2]);
         server.register(request);
-        return String.format("You registered as %s", params[0]);
+        var result = server.login(new LoginRequest(params[0],params[1]));
+        authToken = result.authToken();
+        state = State.LOGGED_IN;
+        return String.format("You registered and logged in as %s", params[0]);
     }
 
     public String login(String... params) throws ResponseException {
-        if (params.length == 2) {
-            var request = new LoginRequest(params[0], params[1]);
-            var result = server.login(request);
-            authToken = result.authToken();
-            state = State.LOGGED_IN;
+        if (params.length != 2) {
+            return "Error: invalid amount of parameters.";
         }
-        else {
-            return "Error: expected login <USERNAME> <PASSWORD>";
-        }
+        var request = new LoginRequest(params[0], params[1]);
+        var result = server.login(request);
+        authToken = result.authToken();
+        state = State.LOGGED_IN;
         return String.format("You signed in as %s", params[0]);
     }
 
@@ -108,7 +112,7 @@ public class ChessClient {
 
     public String createGame(String... params) throws ResponseException {
         assertState();
-        if (params.length < 1) {
+        if (params.length != 1) {
             return "Invalid amount of parameters";
         }
         var name = String.join(" ", params);
@@ -132,9 +136,18 @@ public class ChessClient {
 
     public String joinGame(String... params) throws ResponseException {
         assertState();
+        try {
+            Integer.parseInt(params[0]);
+        } catch (NumberFormatException e) {
+            return "Error: input was not an integer";
+        }
         var games = server.listGames(authToken);
         var gamesList = new ArrayList<>(games.games());
-        GameRecord game = gamesList.get(Integer.parseInt(params[0]) - 1);
+        int gameNum = Integer.parseInt(params[0]) - 1;
+        if (gameNum < 0 || gameNum > gamesList.size()) {
+            return "Error: invalid game number.";
+        }
+        GameRecord game = gamesList.get(gameNum);
         int gameID = game.gameID();
         String color = params[1].toUpperCase();
         server.joinGame(authToken, new JoinGameRequest(color, gameID));
@@ -145,9 +158,15 @@ public class ChessClient {
 
     public String observeGame(String... params) throws ResponseException {
         assertState();
+        if (params.length != 1) {
+            return "Error: invalid amount of parameters.";
+        }
         var games = server.listGames(authToken);
         var gamesList = new ArrayList<>(games.games());
         GameRecord game = gamesList.get(Integer.parseInt(params[0]) - 1);
+        if (game == null) {
+            return "Error: no game has been created with that number.";
+        }
         int gameID = game.gameID();
         return String.format("Observing game %s.%n", game.gameName()) +
                 DrawBoard.drawBoard(new ChessGame().getBoard(), true);

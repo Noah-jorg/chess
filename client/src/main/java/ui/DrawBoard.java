@@ -42,11 +42,10 @@ public class DrawBoard {
         if (whitePlayer) {
             columns = "  a  b  c  d  e  f  g  h  ";
         } else {
-            columns = "  h  g  f  e  d  b  c  a  ";
+            columns = "  h  g  f  e  d  c  b  a  ";
         }
         return BORDER_BG + BORDER_TEXT + "  " + columns + "  " + RESET_BG_COLOR + RESET_TEXT_COLOR + "\n";
     }
-
     private static String row(ChessBoard board, int row, boolean whitePlayer) {
         String result = BORDER_BG + BORDER_TEXT + " " + row + " ";
         if (whitePlayer) {
